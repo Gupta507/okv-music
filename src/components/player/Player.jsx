@@ -274,13 +274,13 @@ const Player = () => {
           >
             <BsChevronDown style={{ width: "100%", height: "100%" }} />
           </button>
-          <p className="announcement-content">
+          {/* <p className="announcement-content">
             Check out{" "}
             <a href="https://okv-tunes.vercel.app/" target="_blank">
               Okv Tunes
             </a>{" "}
             for the latest audio tracks.
-          </p>
+          </p> */}
           <PlayerMoreInfo
             id={id}
             audioUrl={playerState.url}

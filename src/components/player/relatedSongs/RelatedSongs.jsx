@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsPlayCircleFill } from "react-icons/bs";
+import { TbRefresh } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
+import { useGetRelatedSongsQuery } from "../../../reduxtool/services/myApi";
 import { addSongInfo } from "../../../reduxtool/slice/currentSongSlice";
 import "./RelatedSongs.css";
 import RelatedSongsSkeleton from "./RelatedSongsSkeleton";
-import { useGetRelatedSongsQuery } from "../../../reduxtool/services/myApi";
 
 const RelatedSongs = ({ songsList, setSongsList }) => {
   const dispatch = useDispatch();
@@ -13,17 +14,19 @@ const RelatedSongs = ({ songsList, setSongsList }) => {
   );
   const { id } = currentSong;
   const [isUpClick, setIsUpClick] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(songsList.length === 0);
 
   const { data, isLoading, isError, error, refetch } = useGetRelatedSongsQuery(
     id,
     {
-      skip: songsList.length,
+      skip: !shouldFetch,
     }
   );
 
   useEffect(() => {
     if (data) {
       setSongsList(data.result);
+      setShouldFetch(false);
     }
     // eslint-disable-next-line
   }, [data]);
@@ -33,10 +36,22 @@ const RelatedSongs = ({ songsList, setSongsList }) => {
   };
 
   const upNextRef = useRef();
+  const refreshRef = useRef();
 
   window.onclick = (e) => {
-    if (e.target !== upNextRef.current) {
+    if (
+      !upNextRef.current?.contains(e.target) &&
+      !refreshRef.current?.contains(e.target)
+    ) {
       setIsUpClick(false);
+    }
+  };
+
+  const handleRefetch = () => {
+    if (!shouldFetch) {
+      setShouldFetch(true);
+    } else {
+      refetch();
     }
   };
 
@@ -55,6 +70,21 @@ const RelatedSongs = ({ songsList, setSongsList }) => {
           isUpClick ? "related-songs-mobile" : ""
         }`}
       >
+        <div className="refresh-container">
+          <button
+            type="button"
+            title="refresh"
+            ref={refreshRef}
+            className="cur-pointer refetch-button"
+            onClick={handleRefetch}
+          >
+            <TbRefresh
+              size={20}
+              className={`${shouldFetch ? "rotate-circle" : ""}`}
+            />
+            Refresh
+          </button>
+        </div>
         {isLoading ? (
           <RelatedSongsSkeleton amount={6} />
         ) : (

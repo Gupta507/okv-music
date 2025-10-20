@@ -127,7 +127,32 @@
   border: none;
   border-radius: 15px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
+
+.refresh-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 5px 3px;
+}
+
+@keyframes rotate360 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-circle {
+  animation: rotate360 1.5s linear infinite;
+  display: inline-block;
+}
+
 
 @media (max-width: 769px) {
   .related-songs-container {
